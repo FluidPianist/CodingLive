@@ -1,9 +1,36 @@
 import React from 'react';
-import { baseUrl } from '../shared/baseUrl';
+import { Card, CardImg, CardText, CardBody, CardTitle, CardSubtitle } from 'reactstrap';
 
 function Home(props){
     return(
-        <div>This is Home</div>
+        <div className="container-fluid mb-4 mt-4">
+            <div className="row">
+                <Card className="col-12 mb-4">
+                    <CardImg/> SomeImage
+                    <CardBody>
+                        <CardTitle>About Card 1</CardTitle>
+                        <CardSubtitle>Some Subtitle</CardSubtitle>
+                        <CardText>Some description</CardText>
+                    </CardBody>
+                </Card>
+                <Card className="col-12 mb-4">
+                    <CardImg/> SomeImage
+                    <CardBody>
+                        <CardTitle>About Card 2</CardTitle>
+                        <CardSubtitle>Some Subtitle</CardSubtitle>
+                        <CardText>Some description</CardText>
+                    </CardBody>
+                </Card>
+                <Card className="col-12 mb-4">
+                    <CardImg/> SomeImage
+                    <CardBody>
+                        <CardTitle>About Card 3</CardTitle>
+                        <CardSubtitle>Some Subtitle</CardSubtitle>
+                        <CardText>Some description</CardText>
+                    </CardBody>
+                </Card>
+            </div>
+        </div>
     );
 }
 
