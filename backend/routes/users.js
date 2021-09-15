@@ -5,9 +5,11 @@ router.use(express.json());
 
 var passport=require('passport');
 var authenticate=require('../authenticate');
+var cors = require('./cors')
 
 /* GET users listing. */
-router.get('/',authenticate.verifyUser,authenticate.verifyAdmin, async (req, res, next) => {
+router.options('*',cors.corsWithOptions,(req,res)=>{res.sendStatus(200);})
+router.get('/',cors.cors,authenticate.verifyUser,authenticate.verifyAdmin, async (req, res, next) => {
   try{
     const users = await User.find({});
     res.statusCode=200;
@@ -17,8 +19,7 @@ router.get('/',authenticate.verifyUser,authenticate.verifyAdmin, async (req, res
     next(err);
   }  
 });
-
-router.post('/developer/signup',async (req,res,next)=>{
+router.post('/developer/signup',cors.cors,async (req,res,next)=>{
     try{  
       var user= await User.register(new User({username:req.body.username,email:req.body.email}),req.body.password);
       if(req.body.firstname)
@@ -36,7 +37,7 @@ router.post('/developer/signup',async (req,res,next)=>{
     }
 });
 
-router.post('/developer/login',(req,res,next)=>{ //after authentication is success the verified users property is adedd to the subsequent req messages as req.user
+router.post('/developer/login',cors.cors,(req,res,next)=>{ //after authentication is success the verified users property is adedd to the subsequent req messages as req.user
         
   passport.authenticate('local', (err,user,info)=>{
     if(err){
@@ -64,7 +65,7 @@ router.post('/developer/login',(req,res,next)=>{ //after authentication is succe
 });
 
 
-router.get('/developer/auth/facebook',passport.authenticate("facebook"));
+router.get('/developer/auth/facebook',cors.cors,passport.authenticate("facebook"));
 
 router.get('/developer/facebook/token',passport.authenticate('facebook'), (req, res) => {
   if (req.user) { //added  by deserializeUser()
@@ -76,11 +77,11 @@ router.get('/developer/facebook/token',passport.authenticate('facebook'), (req, 
 });
 
 
-router.get('/developer/auth/google',passport.authenticate("google",{
+router.get('/developer/auth/google',cors.cors,passport.authenticate("google",{
   scope: ["profile","email"]
 }));
 
-router.get('/developer/google/token', passport.authenticate('google'), (req, res) => {
+router.get('/developer/google/token', cors.cors,passport.authenticate('google'), (req, res) => {
   if (req.user) { //added  by deserializeUser()
     console.log(req.user);
     var token = authenticate.getToken({_id: req.user._id});
