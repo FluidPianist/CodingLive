@@ -9,9 +9,19 @@
   margin:0px auto;
 }
 
+.frh{
+   height: 100px;
+}
+
 address{
   font-size:80%;
   margin:0px;
   color:#0f0f0f;
 }
 
+
+@media (min-width: 768px) {
+  .frh {
+    height: 65px;
+  }
+}

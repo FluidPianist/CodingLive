@@ -1,11 +1,13 @@
 import * as ActionTypes from '../ActionTypes';
 
 export const Auth = (state = {
+    //default parameters are set as such when Auth reducer is used for the first time
     isLoading: false,
     isAuthenticated: localStorage.getItem('token') ? true : false,
     token: localStorage.getItem('token'),
     user: localStorage.getItem('creds') ? JSON.parse(localStorage.getItem('creds')) : null,
-    errMess: null
+    errMess: null,
+    usertype : localStorage.getItem('usertype') ?(localStorage.getItem('usertype')) : null,
 }, action) => {
     switch (action.type) {
         case ActionTypes.LOGIN_REQUEST:
@@ -19,13 +21,28 @@ export const Auth = (state = {
                 isLoading: false,
                 isAuthenticated: true,
                 errMess: '',
-                token: action.token
+                token: action.token,
+                usertype: action.usertype,
+                
             };
         case ActionTypes.LOGIN_FAILURE:
                 return {...state,
                     isLoading: false,
                     isAuthenticated: false,
                     errMess: action.message
+                };
+        case ActionTypes.LOGOUT_REQUEST:
+                return {...state,
+                    isLoading: true,
+                    isAuthenticated: true
+                };
+        case ActionTypes.LOGOUT_SUCCESS:
+                return {...state,
+                    isLoading: false,
+                    isAuthenticated: false,
+                    token: '',
+                    user: null,
+                    usertype: '',
                 };
         default:
             return state

@@ -1,5 +1,5 @@
 import React from 'react';
-import Main from './routes/MainComponent';
+import Main from './routes/MainRouter';
 import './App.css';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -18,7 +18,7 @@ function App() {
         </BrowserRouter>
       </Provider>
     );
-  
+      
 }
 
 export default App;

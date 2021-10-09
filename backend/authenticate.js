@@ -3,6 +3,7 @@ var User = require('./models/user');
 var LocalStrategy = require('passport-local').Strategy;
 var JwtStrategy = require('passport-jwt').Strategy;
 var FacebookStrategy=require('passport-facebook').Strategy;
+//var FacebookTokenStrategy = require('passport-facebook-token');
 var GoogleStrategy= require('passport-google-oauth20').Strategy;
 var ExtractJwt = require('passport-jwt').ExtractJwt;
 var jwt = require('jsonwebtoken');
@@ -17,7 +18,7 @@ passport.deserializeUser(User.deserializeUser()); //adds user to req.user
 
 exports.getToken = function(user){
     return jwt.sign(user,process.env.SECRET_KEY,{
-        expiresIn: 7200
+        expiresIn: 3600
     });
 };
 
@@ -39,13 +40,14 @@ exports.jwtPassport= passport.use(new JwtStrategy(opts,
                 return done(null,false); //no user found 
             }
         });
-    }));
+    })
+);
 
 exports.verifyUser = passport.authenticate('jwt',{session:false});
 
 exports.verifyAdmin = (req,res,next) => {
     console.log("Admin verification");
-    if(req.user.admin){
+    if(req.user.usertype==="admin"){
         next();
     }
     else{
@@ -55,10 +57,11 @@ exports.verifyAdmin = (req,res,next) => {
     }
 }
 
+
 exports.facebookPassport = passport.use(new FacebookStrategy({
     clientID: process.env.FB_CLIENT_ID,
     clientSecret: process.env.FB_CLIENT_SECRET,
-    callbackURL: '/users/developer/facebook/token',
+    callbackURL: '/user/facebook/token',
     profileFields: ["email", "name",]
 },(accessToken,refreshToken,profile,done)=>{
     User.findOne({facebookId: profile.id}, (err, user) => {
@@ -80,8 +83,7 @@ exports.facebookPassport = passport.use(new FacebookStrategy({
                 else{
                     user = new User({ username: profile.emails[0].value});
                     user.facebookId = profile.id;
-                    user.firstname = profile.name.givenName;
-                    user.lastname = profile.name.familyName;
+                    user.usertype="candidate";
                     user.save((err, user) => {
                         if (err)
                             return done(err, false);
@@ -97,7 +99,7 @@ exports.facebookPassport = passport.use(new FacebookStrategy({
 exports.googlePassport = passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/users/developer/google/token"
+    callbackURL: "/user/google/token"
 },(accessToken,refreshToken,profile,done)=>{
     User.findOne({googleId: profile.id}, (err, user) => {
         if (err) {
@@ -119,8 +121,7 @@ exports.googlePassport = passport.use(new GoogleStrategy({
                 else{
                     user = new User({ username: profile.emails[0].value});
                     user.googleId = profile.id;
-                    user.firstname = profile.name.givenName;
-                    user.lastname = profile.name.familyName;
+                    user.usertype="candidate";
                     user.save((err, user) => {
                         if (err)
                             return done(err, false);
