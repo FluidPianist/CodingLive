@@ -1,30 +1,8 @@
 import { baseUrl } from "../../shared/baseUrl";
-import * as ActionTypes from '../ActionTypes';
 import { loginUser } from "./Login";
-export const requestSignup = () => {
-  return {
-      type: ActionTypes.SIGNUP_REQUEST,
-  }
-}
+import { statusUpdate } from "./StatusUpdate";
+import { actions } from "react-redux-form";
 
-export const receiveSignup = () => {
-  return {
-      type: ActionTypes.SIGNUP_SUCCESS,
-  }
-}
-
-export const SignupError = () => {
-  return {
-      type: ActionTypes.SIGNUP_FAILURE,
-  }
-}
-
-export const Availability = (available) => {
-  return {
-      type: ActionTypes.EMAIL_STATUS_UPDATE,
-      available  
-  }
-}
 
 export const CheckAvailability = (username) => (dispatch) => { 
   return fetch(baseUrl + 'user/signup/searchemail', {
@@ -48,16 +26,11 @@ export const CheckAvailability = (username) => (dispatch) => {
           throw error;
    })
   .then(response => response.json())
-  .then(response => { 
-    console.log("From thunk "+username+" "+response.available);
-     dispatch(Availability(response.available))
-  })
-  .catch(error =>  { alert(error) });
 };
 
 
 export const Signup = (SignUpInfo) => (dispatch) => { 
-    dispatch(requestSignup());
+    dispatch(statusUpdate(true,null,''));
     return fetch(baseUrl + 'user/signup/candidate', {
         method: "POST",
         body: JSON.stringify(SignUpInfo),
@@ -70,7 +43,8 @@ export const Signup = (SignUpInfo) => (dispatch) => {
         if (response.ok) {
           return response;
         } else {
-          var error = new Error('Error ' + response.status + ': ' + response.statusText);
+          var msg =response.json().errmsg
+          var error = new Error('Error ' + response.status + ': ' + ((msg)?msg:(response.statusText)));
           error.response = response;
           throw error;
         }
@@ -78,13 +52,14 @@ export const Signup = (SignUpInfo) => (dispatch) => {
       error => {
             throw error;
      })
-    .then(response => response.json())
+    .then(response=>response.json())  
     .then(response => {
-      dispatch(receiveSignup()); 
-      console.log(response.status);
-      dispatch(loginUser( {username: SignUpInfo.username,password: SignUpInfo.password})); 
+      if(response.success)
+        dispatch(actions.reset('SignUpInfo'));
+        dispatch(statusUpdate(true,true,"Account Creation Successful!! Now Logging In"))
+        setTimeout(()=>{dispatch(loginUser( {username: SignUpInfo.username,password: SignUpInfo.password}))},2000); 
       } 
     )
-    .catch(error =>  { dispatch(SignupError()); alert('Account Could not be Created\nError: '+error.message); });
+    .catch(error => dispatch(statusUpdate(false,false,error.message)));
 };
 

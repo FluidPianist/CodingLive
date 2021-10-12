@@ -17,7 +17,7 @@ function WelcomeRouter(){
                 <Route exact path='/' component={() => <Home/>} /> 
                 <Route exact path='/login' component={()=><React.Fragment><Login/><OAuth/></React.Fragment>}/>
                 <Route exact path="/signup" component={()=><SignUp/>}/> 
-                <Route exact path="/signup/company" component={()=><React.Fragment><SignUpCompany/><OAuth/></React.Fragment>}/>
+                <Route exact path="/signup/company" component={()=><SignUpCompany/>}/>
                 <Route exact path="/signup/candidate" component={()=><React.Fragment><SignUpCandidate/><OAuth/></React.Fragment>}/>
                 <Redirect to="/" />             
           </Switch>

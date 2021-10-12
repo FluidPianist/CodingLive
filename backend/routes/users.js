@@ -22,13 +22,19 @@ router.get('/',cors.cors,authenticate.verifyUser,authenticate.verifyAdmin, async
 
 router.post('/signup/candidate',cors.cors,async (req,res,next)=>{
     try{ 
+      var ch= await User.findOne({username:req.body.username});
+      if(ch!==null){
+        res.statusCode= 409;
+        res.setHeader('Content-Type','application/json');
+        res.json({errmsg:"Email Already Exists !!"});
+      }
       var user= await User.register(new User({username:req.body.username}),req.body.password);
        user.usertype = "candidate";
        await user.save();
-      passport.authenticate('local')(req,res,()=>{ //to ensure the user was registered
+       passport.authenticate('local')(req,res,()=>{ //to ensure the user was registered
         res.statusCode= 200;
         res.setHeader('Content-Type','application/json');
-        res.json({success:true,status: 'Registration Succesful',});
+        res.json({success:true});
       })
     } catch(err){
        next(err);
@@ -40,6 +46,7 @@ router.post('/signup/company',cors.cors,async (req,res,next)=>{
       res.setHeader('Content-Type','application/json');
       res.json(req.body);  
 }); //Redirects to the Welcome page with approval waiting message 
+
 
 router.post('/signup/searchemail',cors.cors,async (req,res,next)=>{
   try{  
@@ -53,30 +60,29 @@ router.post('/signup/searchemail',cors.cors,async (req,res,next)=>{
   }
 });
 
+
 router.post('/login',cors.cors,(req,res,next)=>{ //after authentication is success the verified users property is adedd to the subsequent req messages as req.user
-        
-  passport.authenticate('local', (err,user,info)=>{
+    
+    passport.authenticate('local', async (err,user,info)=>{
     if(err){
       return next(err);
     }
-    if(!user){
+    else if(!user){
+      var ch= await User.findOne({username:req.body.username});
+      var msg=(!ch)?": Account does not exist":": Incorrect Email or Password";
       res.statusCode= 401;
       res.setHeader('Content-Type','application/json');
-      res.json({success:false,status: 'Login Unsuccessfull',err: info});
+      res.json({success:false,errmsg: msg});
     }
-    req.logIn(user,(err)=>{
-      if(err) {
-        res.statusCode= 401;
+    else{
+      req.logIn(user,(err)=>{
+        var token=authenticate.getToken({_id: req.user._id}); //token will be created on success and will be included in the subsequent requests header ( handled by the browser)
+        res.statusCode= 200;
         res.setHeader('Content-Type','application/json');
-        res.json({success:false,status: 'Login Unsuccessfull',err: 'Incorrect Password'});
-      }
-      var token=authenticate.getToken({_id: req.user._id}); //token will be created on success and will be included in the subsequent requests header ( handled by the browser)
-      res.statusCode= 200;
-      res.setHeader('Content-Type','application/json');
-      res.json({success:true,token: token,status: 'You are successfully logged in',usertype:req.user.usertype}); 
-    });
-
-  }) (req,res,next);     
+        res.json({success:true,token:token, usertype:req.user.usertype}); 
+      });
+    }
+  })(req,res,next);     
           
 });
 
@@ -84,12 +90,20 @@ router.post('/login',cors.cors,(req,res,next)=>{ //after authentication is succe
 
 router.get('/auth/facebook',cors.cors,passport.authenticate("facebook"));
 
-router.get('/facebook/token',passport.authenticate('facebook'), (req, res) => {
-  if (req.user) { //added  by deserializeUser()
-    var token = authenticate.getToken({_id: req.user._id});
-    //res.json({success: true, token: token, status: 'You are successfully logged in!', usertype:req.user.usertype});
-    res.redirect("http://localhost:3000/?token="+token+"&username="+req.user.username+"&garbage=");
-  }
+router.get('/facebook/token', (req, res, next) => {
+  passport.authenticate('facebook',
+    (err,user,info)=>{  //to pass customized error message from done
+      if(err){return next(err);}
+      if(!user){
+        res.redirect("http://localhost:3000/?success=false&errmsg="+info+"&garbage=")
+      }
+      else{
+        req.logIn(user,(err)=>{
+          var token = authenticate.getToken({_id: req.user._id});
+          res.redirect("http://localhost:3000/?success=true&token="+token+"&username="+req.user.username+"&usertype="+req.user.usertype+"&garbage=");
+        });
+      }
+    })(req,res,next);
 });
 
 
@@ -97,13 +111,22 @@ router.get('/auth/google',cors.cors,passport.authenticate("google",{
   scope: ["profile","email"]
 }));
 
-router.get('/google/token', cors.cors,passport.authenticate('google'), (req, res) => {
-  if (req.user) { //added  by deserializeUser()
-    var token = authenticate.getToken({_id: req.user._id});
-    //res.json({success: true, token: token, status: 'You are successfully logged in!', usertype:req.user.usertype});
-    res.redirect("http://localhost:3000/?token="+token+"&username="+req.user.username+"&garbage=");
-  }
+router.get('/google/token', cors.cors, (req, res, next) => {
+  passport.authenticate('google',
+    (err,user,info)=>{
+      if(err){return next(err);}
+      if(!user){
+        res.redirect("http://localhost:3000/?success=false&errmsg="+info+"&garbage=")
+      }
+      else{
+        req.logIn(user,(err)=>{
+          var token = authenticate.getToken({_id: req.user._id});
+          res.redirect("http://localhost:3000/?success=true&token="+token+"&username="+req.user.username+"&usertype="+req.user.usertype+"&garbage=");
+        });
+      }
+    })(req,res,next);
 });
+
           
 //If the user has signed up for the first time They will be prompted to enter their basic personal details.
 //From the profile section of google and facebook some info in the post-signup form 

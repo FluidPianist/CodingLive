@@ -1,17 +1,18 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 /* eslint-disable react/jsx-pascal-case */
 import React ,{useEffect} from 'react';
 import { Button, Label, Col, Row } from 'reactstrap';
-import { Control, Form, Errors,actions } from 'react-redux-form';
+import { Control, Form, Errors,} from 'react-redux-form';
 import { Signup } from '../../redux/Actions/Signup';
 import { CheckAvailability } from '../../redux/Actions/Signup';
-import {useDispatch,useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => !(val) || (val.length >= len);
 const isNumber = (val) => !isNaN(Number(val));
-const validEmail = (val) => !(val) || /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val);
+
 
 
 
@@ -19,17 +20,10 @@ const validEmail = (val) => !(val) || /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/
 function SignUpCandidate(){
    
    const dispatch = useDispatch();    
-   const available = useSelector(state=>state.signingup.available);
-
-    const Availability = (val) => {
-          dispatch(CheckAvailability(val));
-          return available;
-    };
-
-
-    function handleSignUp(values){
-        dispatch(Signup(values));    
-        dispatch(actions.reset('SignUpInfo'));
+   
+    
+   function handleSignUp(values){
+        dispatch(Signup(values));   
     }
 
     return(
@@ -44,9 +38,14 @@ function SignUpCandidate(){
                         onSubmit={(values) => handleSignUp(values)}
                         validators={{
                            '':{ 
-                            passwordsMatch: (vals)=>!(vals.c_password)||(vals.password === vals.c_password)
-                           },
-                        }}>
+                            passwordsMatch: (vals)=>!(vals.c_password)||(vals.password === vals.c_password),
+                            required:(vals) => vals.username && vals.username.length,
+                            validEmail:(vals) => !(vals.username) || /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(vals.username)
+                          },
+                        }}
+                        //asyncValidateOn="change"
+                    >
+                           
                         <Row className="form-group mt-4 frh">
                             <Label htmlFor="firstname" md={4}>First Name</Label>
                             <Col md={8}>
@@ -106,7 +105,6 @@ function SignUpCandidate(){
                                     <Errors
                                         className="text-danger small"
                                         model=".phone"
-                                        show={{focus: false}}
                                         component="li"
                                         messages={{
                                             required: 'Required ',
@@ -122,36 +120,38 @@ function SignUpCandidate(){
                                 <Col md={8}>
                                     <Control.text model=".username" id="username" name="username"
                                         placeholder="Email"
-                                        className="form-control"
-                                        validators={{
-                                            required, validEmail, Availability ,
+                                        className="form-control"                                      
+                                        asyncValidators={
+                                            {
+                                                available: (val,done)=> dispatch(CheckAvailability(val))
+                                                           .then(response=>done(response.available)),                                                          
+                                            }
+                                        }  
+                                        asyncValidateOn="change"     
+                                    />                        
+                                    <Errors
+                                        className="text-danger small"
+                                        model="SignUpInfo"
+                                        component="li"
+                                        messages={{
+                                            validEmail: 'Invalid Email Format ',
+                                            required: 'Required '
                                         }}
-                                         />
+                                    />
                                     <Errors
                                         className="text-danger small"
                                         model=".username"
-                                        //show={{touched: true}}
                                         component="li"
-                                        messages={{
-                                            required: 'Required ',
-                                            validEmail: 'Invalid Email Address ',
+                                        messages={{                                           
+                                            available: 'Email already exists ',                                            
                                         }}
-                                     />
-                                     <Errors
-                                        className="text-danger small"
-                                        model=".username"
-                                        show={{touched: true}}
-                                        component="li"
-                                        messages={{
-                                            Availability: 'Email already exists '
-                                        }}
-                                     />
+                                    />    
                                 </Col>
                             </Row>
                             <Row className="form-group frh">
                                 <Label htmlFor="password" md={4}>Create Password</Label>
                                 <Col md={8}>
-                                    <Control.text model=".password" id="password" name="password"
+                                    <Control.text model=".password" type="password" id="password" name="password"
                                         placeholder="Password"
                                         className="form-control"
                                         validators={{
@@ -161,7 +161,6 @@ function SignUpCandidate(){
                                     <Errors
                                         className="text-danger small"
                                         model=".password"
-                                        show={{focus: false}}
                                         component="li"
                                         messages={{
                                             required: 'Required ',
@@ -173,7 +172,7 @@ function SignUpCandidate(){
                             <Row className="form-group frh">
                                 <Label htmlFor="c_password" md={4}>Confirm Password</Label>
                                 <Col md={8}>
-                                    <Control.text model=".c_password" id="c_password" name="c_password"
+                                    <Control.text model=".c_password" type="password" id="c_password" name="c_password"
                                         placeholder="Confirm Password"
                                         className="form-control"
                                         validators={{
@@ -193,7 +192,6 @@ function SignUpCandidate(){
                                      <Errors model="SignUpInfo"
                                         className="text-danger small"
                                         show={{touched: true, focus: false}}
-
                                         component="li"
                                         messages={{
                                             passwordsMatch: 'Passwords Must Match'

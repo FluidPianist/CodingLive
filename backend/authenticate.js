@@ -76,21 +76,24 @@ exports.facebookPassport = passport.use(new FacebookStrategy({
                 if (err) {
                     return done(err, false);
                 }
-                if (!err && user !== null) { //Login via a different route
-                    err = new Error("You already have an account registered through a different method, Please login using that method");
-                    return done(err, false);
+                if(!err&&user.usertype!=="candidate"){  //No OAuth for admin and company
+                    var errmsg = "Google or Facebook Connect Only for candidate";
+                    return done(null,false,errmsg);
+                }
+                if (!err && user !== null) { //Link Account if already exists for candidate
+                    user.facebookId=profile.id;
                 }
                 else{
                     user = new User({ username: profile.emails[0].value});
                     user.facebookId = profile.id;
-                    user.usertype="candidate";
-                    user.save((err, user) => {
-                        if (err)
-                            return done(err, false);
-                        else
-                            return done(null, user);
-                    })
+                    user.usertype="candidate";                    
                 }
+                user.save((err, user) => {
+                    if (err)
+                        return done(err, false);
+                    else
+                        return done(null, user);
+                });
             })
         }
     });
@@ -108,27 +111,30 @@ exports.googlePassport = passport.use(new GoogleStrategy({
         if (!err && user !== null) {
             return done(null, user);
         }
-        else { //if no such user present then create account
+        else { //If no such user present then create account if account does not exist using a different method
             
             User.findOne({username: profile.emails[0].value}, (err, user)=>{
                 if (err) {
                     return done(err, false);
                 }
+                if(!err&&user.usertype!=="candidate"){
+                    var errmsg = "Google or Facebook Connect Only for candidate";
+                    return done(null,false,errmsg);
+                }
                 if (!err && user !== null) { //Login via a different route
-                    err = new Error("You already have an account , Please login using a different method");
-                    return done(err, false);
+                    user.googleId=profile.id;
                 }
                 else{
                     user = new User({ username: profile.emails[0].value});
                     user.googleId = profile.id;
-                    user.usertype="candidate";
-                    user.save((err, user) => {
-                        if (err)
-                            return done(err, false);
-                        else
-                            return done(null, user);
-                    })
+                    user.usertype="candidate";                    
                 }
+                user.save((err, user) => {
+                    if (err)
+                        return done(err, false);
+                    else
+                        return done(null, user);
+                });
             })
         }
     });
