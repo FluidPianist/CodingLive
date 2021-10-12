@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 const Dashboard = () =>{
   var user= useSelector(state=>state.auth.user)
   return (
-      <div>Hello , {user}</div>
+      <div>Hello Candidate , {user}</div>
   )
 }
 

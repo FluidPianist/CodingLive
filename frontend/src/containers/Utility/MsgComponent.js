@@ -15,11 +15,12 @@ function Message(){
         dispatch(statusUpdate(false,null,'')); 
         setVisible(true);
     }; 
-   
-
+    if(visible&&status.msg){
+        setTimeout(()=>{onDismiss()},3000);
+    }
     if(status.msg){ //status msg is empty for no requests
         return(
-            <Alert className="text-center" isOpen={visible} toggle={onDismiss} color={(status.success)?"success":"danger"}>
+            <Alert className="text-center position-fixed sticky-top w-100" isOpen={visible} toggle={onDismiss} color={(status.success)?"success":"danger"}>
                {status.msg}
             </Alert>
         );

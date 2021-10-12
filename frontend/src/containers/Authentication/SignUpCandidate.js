@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
 /* eslint-disable react/jsx-pascal-case */
-import React ,{useEffect} from 'react';
+import React from 'react';
 import { Button, Label, Col, Row } from 'reactstrap';
 import { Control, Form, Errors,} from 'react-redux-form';
 import { Signup } from '../../redux/Actions/Signup';
@@ -19,9 +19,7 @@ const isNumber = (val) => !isNaN(Number(val));
 
 function SignUpCandidate(){
    
-   const dispatch = useDispatch();    
-   
-    
+   const dispatch = useDispatch();       
    function handleSignUp(values){
         dispatch(Signup(values));   
     }
