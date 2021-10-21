@@ -1,12 +1,16 @@
 var passport = require('passport');
 var User = require('./models/user');
+var Candidate = require('./models/candidate');
+
 var LocalStrategy = require('passport-local').Strategy;
 var JwtStrategy = require('passport-jwt').Strategy;
 var FacebookStrategy=require('passport-facebook').Strategy;
-//var FacebookTokenStrategy = require('passport-facebook-token');
 var GoogleStrategy= require('passport-google-oauth20').Strategy;
 var ExtractJwt = require('passport-jwt').ExtractJwt;
 var jwt = require('jsonwebtoken');
+
+
+
 
 //User.authenticate,User.serializeUser,User.deserializeUser are prebuilt methods present in passportLocalMongoose which was plugged inside the userschema
 
@@ -18,7 +22,7 @@ passport.deserializeUser(User.deserializeUser()); //adds user to req.user
 
 exports.getToken = function(user){
     return jwt.sign(user,process.env.SECRET_KEY,{
-        expiresIn: 3600
+        expiresIn: 3600*24
     });
 };
 
@@ -51,9 +55,8 @@ exports.verifyAdmin = (req,res,next) => {
         next();
     }
     else{
-        err = new Error("Admin access required!!")
-        err.status = 403;
-        return next(err);
+        res.statusMessage = "Admin Access Required";
+        return res.status(403).end();
     }
 }
 
@@ -76,17 +79,22 @@ exports.facebookPassport = passport.use(new FacebookStrategy({
                 if (err) {
                     return done(err, false);
                 }
-                if(!err&&user.usertype!=="candidate"){  //No OAuth for admin and company
-                    var errmsg = "Google or Facebook Connect Only for candidate";
+                if (!err && user !== null) { //Login via a different route
+                    var errmsg = "You have already signed up through a different method";
                     return done(null,false,errmsg);
-                }
-                if (!err && user !== null) { //Link Account if already exists for candidate
-                    user.facebookId=profile.id;
                 }
                 else{
                     user = new User({ username: profile.emails[0].value});
                     user.facebookId = profile.id;
-                    user.usertype="candidate";                    
+                    user.usertype="candidate";  
+                    var info=profile._json;  
+                    var cand = new Candidate({
+                        username: info.email,
+                        firstname:info.first_name,
+                        lastname:info.last_name,                        
+                    })
+                    cand._id=user._id;
+                    cand.save();
                 }
                 user.save((err, user) => {
                     if (err)
@@ -117,17 +125,22 @@ exports.googlePassport = passport.use(new GoogleStrategy({
                 if (err) {
                     return done(err, false);
                 }
-                if(!err&&user.usertype!=="candidate"){
-                    var errmsg = "Google or Facebook Connect Only for candidate";
-                    return done(null,false,errmsg);
-                }
                 if (!err && user !== null) { //Login via a different route
-                    user.googleId=profile.id;
+                    var errmsg = "You have already signed up through a different method";
+                    return done(null,false,errmsg);
                 }
                 else{
                     user = new User({ username: profile.emails[0].value});
                     user.googleId = profile.id;
-                    user.usertype="candidate";                    
+                    user.usertype="candidate";  
+                    var info=profile._json;  
+                    var cand = new Candidate({
+                        username: info.email,
+                        firstname:info.given_name,
+                        lastname:info.family_name,                        
+                    })
+                    cand._id=user._id;
+                    cand.save();                  
                 }
                 user.save((err, user) => {
                     if (err)

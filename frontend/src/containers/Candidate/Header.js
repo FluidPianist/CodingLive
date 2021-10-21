@@ -3,7 +3,7 @@ import {Navbar, NavbarBrand, Nav, NavbarToggler, Collapse,NavItem,
         Button } from 'reactstrap';
 import {NavLink} from 'react-router-dom';
 import { logoutUser} from '../../redux/Actions/Logout'
-import {useSelector,useDispatch} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import logo from '../../shared/logo.PNG';
 
 
@@ -11,7 +11,6 @@ import logo from '../../shared/logo.PNG';
 
 const Header = () => {
 
-    const auth = useSelector(state=>state.auth);
 
     const dispatch = useDispatch()
 

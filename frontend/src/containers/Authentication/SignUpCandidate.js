@@ -5,6 +5,7 @@ import { Button, Label, Col, Row } from 'reactstrap';
 import { Control, Form, Errors,} from 'react-redux-form';
 import { Signup } from '../../redux/Actions/Signup';
 import { CheckAvailability } from '../../redux/Actions/Signup';
+import { statusUpdate } from '../../redux/Actions/StatusUpdate'
 import {useDispatch} from 'react-redux';
 
 
@@ -12,8 +13,6 @@ const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => !(val) || (val.length >= len);
 const isNumber = (val) => !isNaN(Number(val));
-
-
 
 
 
@@ -122,7 +121,8 @@ function SignUpCandidate(){
                                         asyncValidators={
                                             {
                                                 available: (val,done)=> dispatch(CheckAvailability(val))
-                                                           .then(response=>done(response.available)),                                                          
+                                                           .then(response=>done(response.data.available))
+                                                           .catch(error => dispatch(statusUpdate(false,false,"Error "+error.response.status+" : "+error.response.statusText))),                                                          
                                             }
                                         }  
                                         asyncValidateOn="change"     

@@ -1,8 +1,8 @@
 import React from 'react';
 import {Form, FormGroup, Input, Label, Button} from 'reactstrap';
 import { loginUser } from '../../redux/Actions/Login';
+import { Link } from 'react-router-dom';
 import {useSelector,useDispatch} from 'react-redux';
-
 
 function Login(){
 
@@ -21,19 +21,24 @@ function Login(){
             {!auth.isAuthenticated?
                 <div className="container ">
                 <div className="row justify-content-center">
-                    <Form className="col-12 col-md-8 border m-4 p-4" onSubmit={handleLogin}>
-                    <div className="col-12 mb-4">
+                    <Form className="col-11 col-md-7 border m-4 p-5" onSubmit={handleLogin}>
+                    <div className="row mb-4">
                         <h3>Login</h3>
                     </div>
-                        <FormGroup >
+                        <FormGroup className="row mb-4" >
                             <Label htmlFor="email">Email</Label>
                             <Input type="text" id="email" name="email"/>
                         </FormGroup>
-                        <FormGroup>
+                        <FormGroup className="row mb-4">
                             <Label htmlFor="password">Password</Label>
-                            <Input type="text" id="password" name="password"/>
+                            <Input type="password" id="password" name="password"/>
                         </FormGroup>
-                        <Button type ="submit" value="submit">Login</Button>  
+                        <FormGroup className="row mb-4">
+                            <Button className="col-4" type ="submit" value="submit">Login</Button>  
+                            <Link className="col-8 text-right text-decoration-none" to={`/forgetpassword`}>
+                                Forget Password
+                            </Link>
+                        </FormGroup>    
                     </Form>
                 </div>
                 </div>

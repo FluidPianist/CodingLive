@@ -1,9 +1,7 @@
 import React from 'react';
 import {useSelector,useDispatch} from 'react-redux';
-import {css} from "@emotion/react"
 import Message from '../containers/Utility/MsgComponent';
-import LoadingOverlay from 'react-loading-overlay';
-import RingLoader from 'react-spinners/RingLoader'
+import Loading from '../containers/Utility/LoadingComponent';
 import CandidateRouter from './CandidateRouter'
 import WelcomeRouter from './WelcomeRouter';
 import CompanyRouter from './CompanyRouter';
@@ -15,13 +13,6 @@ import {OAuthConnect} from  '../redux/Actions/Login';
   User=admin -> load admin section
   User= company -> load company section 
 */
-
-const override = css`
-  display: block;
-  margin-bottom: 20%; 
-
-`;
-
 
 function VIEW(usertype){
   if(usertype==="candidate")
@@ -44,9 +35,7 @@ function VIEW(usertype){
 
 function Main(){
    var auth=useSelector(state=>state.auth);
-   var status=useSelector(state=>state.status);
    const dispatch = useDispatch();  
-  
    var url =new URL(document.URL);
    var oauth=url.searchParams.get("success"); //For OAuth Login , equals null if not used
 
@@ -58,29 +47,11 @@ function Main(){
    /*********************************/  
 
     return(
-      <LoadingOverlay
-             active={status.isLoading}     
-             spinner = {<RingLoader color="white" css={override} size={100}/>} 
-             styles={{
-              content: (base) => ({
-                ...base,
-                position: 'fixed',
-                left: '45%',
-                top: '10%',
-                color: 'rgb(169,169,169)'
-              }),
-              overlay: (base) => ({
-                ...base,
-                height: '100vh',
-                position: 'fixed'
-              })
-             }}   
-             text="Loading... "
-      >
+      <div>
+        <Loading/>        
         <Message/>
         {VIEW(auth.usertype)}
-
-      </LoadingOverlay>         
+      </div>
     );
  }
 export default Main;

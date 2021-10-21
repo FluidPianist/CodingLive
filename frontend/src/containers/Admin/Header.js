@@ -39,6 +39,16 @@ const Header = () => {
                                 </NavLink>
                             </NavItem>
                             <NavItem>
+                                <NavLink className="nav-link" to='/applications'>
+                                    <span className="font-weight-bold">Applications</span>
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink className="nav-link" to='/users'>
+                                    <span className="font-weight-bold">Users</span>
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
                                 <Button  onClick={handleLogout}>
                                     <span className="font-weight-bold">LogOut</span>
                                 </Button>

@@ -4,12 +4,16 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('dotenv').config();
-var passport = require('passport');
+
 var authenticate = require('./authenticate');
+var mailer=require('./mailer');
+var passport = require('passport');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+var adminRouter = require('./routes/admin');
+var companyRouter = require('./routes/admin');
+var candidateRouter= require('./routes/candidate');
 
 
 /*********DATABASE CONNECTION******* */
@@ -37,7 +41,6 @@ const connect = mongoose.connect(
 
 
 var app = express();
-
 //Allowing only secure traffic
 app.all('*',(req,res,next)=>{
   if(req.secure){
@@ -62,6 +65,9 @@ app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
+app.use('/admin',adminRouter);
+app.use('/company',companyRouter);
+app.use('/candidate',candidateRouter);
 
 app.use(express.static(path.join(__dirname, 'public')));
 

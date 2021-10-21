@@ -1,6 +1,7 @@
 import * as ActionTypes from '../ActionTypes';
 import {statusUpdate} from './StatusUpdate';
-import { baseUrl } from '../../shared/baseUrl';
+import axios from "axios";
+const baseUrl =process.env.REACT_APP_BASE_URL; //No need to add dotenv in react if all variable have REACT_APP suffix
 
 //This is the action creator which sets the parameter as such
 export const requestLogin = (creds) => {
@@ -8,7 +9,8 @@ export const requestLogin = (creds) => {
         type: ActionTypes.LOGIN_REQUEST,
     }
 }
-  
+ 
+
 export const receiveLogin = (response,creds) => {
     return {
         type: ActionTypes.LOGIN_SUCCESS,
@@ -29,35 +31,22 @@ export const loginUser = (creds) => (dispatch) => {
     // We dispatch requestLogin to kickoff the call to the API;
     dispatch(requestLogin());
     dispatch(statusUpdate(true,null,''));
-    return fetch(baseUrl + 'user/login', {
-        method: 'POST',
-        headers: { 
-            'Content-Type':'application/json' 
-        },
-        body: JSON.stringify(creds)
+    axios.post(baseUrl+"user/login", {
+        username:creds.username,
+        password:creds.password
     })
-    .then(response => response.json())
     .then(response => {
-        if (response.success) {
-            console.log(creds.username);
-            localStorage.setItem('token', response.token);
+            console.log(response);
+            localStorage.setItem('token', response.data.token);
             localStorage.setItem('creds', JSON.stringify(creds.username));
-            localStorage.setItem('usertype',response.usertype);
+            localStorage.setItem('usertype',response.data.usertype);
             // Dispatch the success action
-            dispatch(receiveLogin(response,creds.username));
-            dispatch(statusUpdate(false,true,"Login Successful"));
-        } else {
-            var error = new Error('Error ' + response.errmsg);
-            throw error;
-        }
-        },
-        error => {
-            throw error;
-        }
-    )
+            dispatch(receiveLogin(response.data,creds.username));
+            dispatch(statusUpdate(false,true,response.data.msg));    
+    })
     .catch(error => {
         dispatch(loginError());
-        dispatch(statusUpdate(false,false,error.message))
+        dispatch(statusUpdate(false,false,"Error "+error.response.status+" : "+error.response.statusText))
     });
 };
 
@@ -79,12 +68,12 @@ export const OAuthConnect = (url) => (dispatch) => {
                     usertype: usertype
                 }
                 dispatch(receiveLogin(response,creds));
-                dispatch(statusUpdate(false,true,'Login Success!!'));
+                dispatch(statusUpdate(false,true,'Login Successfull!!'));
             }
             else{
                 var errmsg=url.searchParams.get("errmsg");
                 dispatch(loginError());
-                dispatch(statusUpdate(false,false,errmsg))
+                dispatch(statusUpdate(false,false,"Error "+errmsg))
             }
             // We dispatch requestLogin to kickoff the call to the API;   
 }

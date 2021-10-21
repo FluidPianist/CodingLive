@@ -1,11 +1,15 @@
 import React from 'react';
 import Main from './routes/MainRouter';
 import './App.css';
+import { createStore, applyMiddleware } from 'redux';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { ConfigureStore } from './redux/configureStore';
+import rootReducer from './redux/configureStore';
+import thunk from 'redux-thunk';
+import logger from 'redux-logger';
 
-const store = ConfigureStore();
+
+const store = createStore(rootReducer,applyMiddleware(thunk, logger));
 
 function App() {
 
