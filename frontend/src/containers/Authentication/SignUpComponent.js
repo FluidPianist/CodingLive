@@ -2,11 +2,13 @@ import React from "react";
 import { Card, CardImg, CardText, CardBody, CardTitle, Button,
        } from 'reactstrap';
 import {Link} from 'react-router-dom';
+import CopyRightFooter from "../Utility/CopyRightFooter";
 function SignUp(){
   return(
-      <div className="container">
+    <React.Fragment>
+      <div className="container-fluid page-center">
         <div className="row justify-content-around">
-          <Card className="col-8 col-md-5 mb-4">
+          <Card className="col-7 col-md-4  mb-4">
                   <CardImg/>
                   <CardBody className="text-center">
                       <CardTitle>Candidate</CardTitle>
@@ -16,7 +18,7 @@ function SignUp(){
                       </Link>
                   </CardBody>                               
           </Card>
-          <Card className="col-8 col-md-5 mb-4">
+          <Card className="col-7 col-md-4  mb-4">
                   <CardImg/>
                   <CardBody className="text-center">
                       <CardTitle>Company</CardTitle>
@@ -27,7 +29,9 @@ function SignUp(){
                   </CardBody>                               
           </Card>
         </div>
+        <CopyRightFooter/>
       </div>
+    </React.Fragment>
   )
 }
 export default SignUp;

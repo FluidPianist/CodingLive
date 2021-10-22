@@ -3,7 +3,6 @@ import { Switch, Route, Redirect} from 'react-router-dom';
 import Home from '../containers/Welcome/HomeComponent';
 import Header from '../containers/Welcome/HeaderComponent';
 import Login from '../containers/Authentication/LoginComponent';
-import Footer from '../containers/Welcome/FooterComponent';
 import SignUp from '../containers/Authentication/SignUpComponent';
 import SignUpCandidate from '../containers/Authentication/SignUpCandidate';
 import SignUpCompany from '../containers/Authentication/SignUpCompany';
@@ -13,7 +12,7 @@ import ResetPassword from '../containers/Authentication/ResetPassword';
 
 function WelcomeRouter(){
     return(
-        <div>
+        <div >
           <Header/>
           <Switch>
                 <Route exact path='/' component={() => <Home/>} /> 
@@ -25,7 +24,6 @@ function WelcomeRouter(){
                 <Route path="/resetpassword/:token/:userId" component={()=><ResetPassword/>}/>
                 <Redirect to="/" />             
           </Switch>
-          <Footer/>
         </div>
     )
 }

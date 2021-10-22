@@ -19,9 +19,19 @@ address{
   color:#0f0f0f;
 }
 
+.page-center{
+  position: absolute;
+  top: 25%;
+}
+
+.page-bottom{
+  width: 100%;
+  margin-top: 100vh;
+}
 
 @media (min-width: 768px) {
   .frh {
     height: 65px;
   }
 }
+

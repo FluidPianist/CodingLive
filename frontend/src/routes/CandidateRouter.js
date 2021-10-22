@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route, Redirect} from 'react-router-dom';
 import Dashboard from '../containers/Candidate/Dashboard';
 import Header from '../containers/Candidate/Header';
+import CopyRightFooter from '../containers/Utility/CopyRightFooter';
 
 function CandidateRouter(){
 

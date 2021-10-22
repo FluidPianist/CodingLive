@@ -1,13 +1,13 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
 /* eslint-disable react/jsx-pascal-case */
-import React from 'react';
+import React , {useState} from 'react';
 import { Button, Label, Col, Row } from 'reactstrap';
 import { Control, Form, Errors,} from 'react-redux-form';
 import { Signup } from '../../redux/Actions/Signup';
 import { CheckAvailability } from '../../redux/Actions/Signup';
 import { statusUpdate } from '../../redux/Actions/StatusUpdate'
 import {useDispatch} from 'react-redux';
-
+import ClickNHold from 'react-click-n-hold';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -22,6 +22,8 @@ function SignUpCandidate(){
    function handleSignUp(values){
         dispatch(Signup(values));   
     }
+
+    const[showPass,setPass] = useState("password");
 
     return(
         
@@ -148,16 +150,21 @@ function SignUpCandidate(){
                             </Row>
                             <Row className="form-group frh">
                                 <Label htmlFor="password" md={4}>Create Password</Label>
-                                <Col md={8}>
-                                    <Control.text model=".password" type="password" id="password" name="password"
-                                        placeholder="Password"
-                                        className="form-control"
-                                        validators={{
-                                            required, minLength: minLength(8)
-                                        }}
-                                         />
-                                    <Errors
-                                        className="text-danger small"
+                                <Col md={8} >
+                                    <div className="d-flex">
+                                        <Control.text model=".password" type={showPass} id="password" name="password"
+                                            placeholder="Password"
+                                            className="form-control col-10 col-lg-11"
+                                            validators={{
+                                                required, minLength: minLength(8)
+                                            }}
+                                        />                                            
+                                        <ClickNHold className="btn btn-light border col-2 col-lg-1" onStart={()=>setPass("text")} onEnd={()=>setPass("password")}>
+                                            <i className="fa fa-eye "></i>
+                                        </ClickNHold>
+                                    </div>
+                                    <Errors 
+                                        className="text-danger small "
                                         model=".password"
                                         component="li"
                                         messages={{

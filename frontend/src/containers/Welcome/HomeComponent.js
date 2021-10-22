@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardImg, CardText, CardBody, CardTitle, CardSubtitle,
          Jumbotron , Button} from 'reactstrap';
 import { Link } from 'react-router-dom';
+import Footer from './FooterComponent';
 function Home(){
     return(
         <div>
@@ -48,6 +49,7 @@ function Home(){
                     </Card>
                 </div>
             </div>
+            <Footer/>
         </div>
     );
 }

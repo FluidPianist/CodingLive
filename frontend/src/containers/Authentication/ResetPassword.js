@@ -1,14 +1,18 @@
-import React  from 'react';
+import React , {useState} from 'react';
 import {Form,FormGroup,Label,Button} from "reactstrap";
 import {useForm} from "react-hook-form";
 import {useParams} from 'react-router-dom';
 import {useDispatch} from 'react-redux';
 import {resetPassword} from '../../redux/Actions/PasswordChange'
+import ClickNHold from 'react-click-n-hold';
+
 
 function ResetPassword(){
     const {register,formState: { errors},watch,handleSubmit} = useForm();
     const watchPassword = watch("password", "");
-   
+    
+    const[showPass,setPass] = useState("password");
+
     let {token,userId}=useParams();
     const dispatch= useDispatch();
       
@@ -29,7 +33,7 @@ function ResetPassword(){
 
                         <FormGroup className="form-group row mb-4" >
                            <Label htmlFor="password">Enter New Password :</Label>
-                           <input type="password" className="form-control" id="password" 
+                           <input type={showPass} className="form-control col-10 col-lg-11" id="password" 
                             {...register("password", {
                              required: "Required",
                              minLength: {
@@ -38,6 +42,9 @@ function ResetPassword(){
                              }         
                             })} />
                             {errors.password && <li className="text-danger small">{errors.password.message}</li>}
+                            <ClickNHold className="btn btn-light border col-2 col-lg-1" onStart={()=>setPass("text")} onEnd={()=>setPass("password")}>
+                                            <i className="fa fa-eye "></i>
+                            </ClickNHold>
                         </FormGroup>
 
                         <FormGroup className="form-group row mb-4" >

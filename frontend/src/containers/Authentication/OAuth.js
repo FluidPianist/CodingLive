@@ -2,6 +2,7 @@ import React from 'react';
 import { Button} from 'reactstrap';
 import {statusUpdate} from '../../redux/Actions/StatusUpdate'
 import {useDispatch} from 'react-redux'
+import CopyRightFooter from '../Utility/CopyRightFooter';
 
 function OAuth(){
   
@@ -12,7 +13,7 @@ function OAuth(){
    }
 
     return(
-        
+        <React.Fragment>
         <div className="container text-center border-top">
             <h4 className="mt-3">Or Join As Candidate With</h4>
             <div className="row justify-content-center m-3">
@@ -24,6 +25,8 @@ function OAuth(){
                 </Button>
             </div>
         </div>
+        <CopyRightFooter/>
+        </React.Fragment>
     )        
 }
 

@@ -4,6 +4,7 @@ import Dashboard from '../containers/Admin/Dashboard';
 import Header from '../containers/Admin/Header';
 import Applications from '../containers/Admin/Applications';
 import Users from '../containers/Admin/Users';
+import CopyRightFooter from '../containers/Utility/CopyRightFooter';
 
 function AdminRouter(){
 
