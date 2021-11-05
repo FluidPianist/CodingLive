@@ -9,6 +9,7 @@ import SignUpCompany from '../containers/Authentication/SignUpCompany';
 import OAuth from '../containers/Authentication/OAuth';
 import ForgetPassword from '../containers/Authentication/ForgetPassword';
 import ResetPassword from '../containers/Authentication/ResetPassword';
+import CopyRightFooter from '../containers/Utility/CopyRightFooter';
 
 function WelcomeRouter(){
     return(
@@ -24,6 +25,7 @@ function WelcomeRouter(){
                 <Route path="/resetpassword/:token/:userId" component={()=><ResetPassword/>}/>
                 <Redirect to="/" />             
           </Switch>
+          <CopyRightFooter/>
         </div>
     )
 }

@@ -84,10 +84,14 @@ exports.facebookPassport = passport.use(new FacebookStrategy({
                     return done(null,false,errmsg);
                 }
                 else{
-                    user = new User({ username: profile.emails[0].value});
+                    var info=profile._json;
+                    user = new User({ 
+                        username: profile.emails[0].value,
+                        firstname:info.first_name,
+                        lastname:info.last_name, 
+                    });
                     user.facebookId = profile.id;
-                    user.usertype="candidate";  
-                    var info=profile._json;  
+                    user.usertype="candidate";    
                     var cand = new Candidate({
                         username: info.email,
                         firstname:info.first_name,
@@ -130,10 +134,14 @@ exports.googlePassport = passport.use(new GoogleStrategy({
                     return done(null,false,errmsg);
                 }
                 else{
-                    user = new User({ username: profile.emails[0].value});
+                    var info=profile._json;
+                    user = new User({ 
+                        username: profile.emails[0].value,
+                        firstname:info.given_name,
+                        lastname:info.family_name, 
+                    });
                     user.googleId = profile.id;
                     user.usertype="candidate";  
-                    var info=profile._json;  
                     var cand = new Candidate({
                         username: info.email,
                         firstname:info.given_name,

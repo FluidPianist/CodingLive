@@ -2,30 +2,36 @@ import React from 'react';
 import { Button} from 'reactstrap';
 import {statusUpdate} from '../../redux/Actions/StatusUpdate'
 import {useDispatch} from 'react-redux'
-import CopyRightFooter from '../Utility/CopyRightFooter';
+const baseUrl =process.env.REACT_APP_BASE_URL;
 
 function OAuth(){
   
    const dispatch=useDispatch();
 
-   const handleConnect=()=>{
+   const handleGoogleConnect=()=>{
       dispatch(statusUpdate(true,null,''));
-   }
+      window.location.href=baseUrl+'user/auth/google';
+    }
+   
+    const handleFBConnect=()=>{
+        dispatch(statusUpdate(true,null,''));
+        window.location.href=baseUrl+'user/auth/facebook';
+    }
+   
 
     return(
-        <React.Fragment>
-        <div className="container text-center border-top">
-            <h4 className="mt-3">Or Join As Candidate With</h4>
-            <div className="row justify-content-center m-3">
-                <Button href="https://localhost:5443/user/auth/google" onClick={handleConnect} className="col-4 col-md-3 mr-3 btn-google">
-                   Google 
-                </Button>
-                <Button href="https://localhost:5443/user/auth/facebook" onClick={handleConnect} className="col-4 col-md-3 btn-facebook">
-                   Facebook
-                </Button>
+        <React.Fragment >
+            <div className="container text-center mb-5 border-top">
+                <h4 className="mt-3">Or Join Using</h4>
+                <div className="row justify-content-center m-3">
+                    <Button  onClick={handleGoogleConnect} className="col-4 col-md-3 mr-3 btn-primary">
+                        <i className="fa fa-google"></i>
+                    </Button>
+                    <Button  onClick={handleFBConnect} className="col-4 col-md-3 btn-primary">
+                        <i className="fa fa-facebook"></i>
+                    </Button>
+                </div>
             </div>
-        </div>
-        <CopyRightFooter/>
         </React.Fragment>
     )        
 }

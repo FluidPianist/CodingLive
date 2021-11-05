@@ -12,7 +12,7 @@ var passport = require('passport');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var adminRouter = require('./routes/admin');
-var companyRouter = require('./routes/admin');
+var companyRouter = require('./routes/company');
 var candidateRouter= require('./routes/candidate');
 
 

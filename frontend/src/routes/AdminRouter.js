@@ -4,7 +4,8 @@ import Dashboard from '../containers/Admin/Dashboard';
 import Header from '../containers/Admin/Header';
 import Applications from '../containers/Admin/Applications';
 import Users from '../containers/Admin/Users';
-import CopyRightFooter from '../containers/Utility/CopyRightFooter';
+import AddAdmin from '../containers/Admin/AddAdmin';
+import CopyRightFooter from '../containers/Utility/CopyRightFooter'
 
 function AdminRouter(){
 
@@ -15,8 +16,10 @@ function AdminRouter(){
                 <Route exact path='/' component={() => <Dashboard/>} />
                 <Route exact path='/applications' component={() => <Applications/>} />
                 <Route exact path='/users' component={() => <Users/>} />
+                <Route exact path='/addadmin' component={()=><AddAdmin/>}/>
                 <Redirect to="/" />
           </Switch>
+          <CopyRightFooter/>
         </div>
     )
 }

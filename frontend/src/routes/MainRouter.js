@@ -7,12 +7,6 @@ import WelcomeRouter from './WelcomeRouter';
 import CompanyRouter from './CompanyRouter';
 import AdminRouter from './AdminRouter';
 import {OAuthConnect} from  '../redux/Actions/Login';
-/*extract the Usertype variable from the state.auth and check its value 
-  User=null -> load Welcome page
-  User=candidate -> load Canddiate section
-  User=admin -> load admin section
-  User= company -> load company section 
-*/
 
 function VIEW(usertype){
   if(usertype==="candidate")
@@ -46,12 +40,13 @@ function Main(){
    }
    /*********************************/  
 
+
     return(
-      <div>
+    <React.Fragment>
         <Loading/>        
         <Message/>
         {VIEW(auth.usertype)}
-      </div>
+    </React.Fragment>
     );
  }
 export default Main;

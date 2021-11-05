@@ -8,7 +8,6 @@ import { CheckAvailability } from '../../redux/Actions/Signup';
 import { statusUpdate } from '../../redux/Actions/StatusUpdate'
 import {useDispatch} from 'react-redux';
 import ClickNHold from 'react-click-n-hold';
-import CopyRightFooter from '../Utility/CopyRightFooter';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -29,11 +28,11 @@ function SignUpCompany(){
     return(
         
        <div className="container">
-           <div className="row justify-content-center ">
-               <div className="col-12 text-center m-4">
-                   <h3>Company SignUp</h3>
-               </div>
-               <div className="col-12 col-md-8 border">
+           <div className="row justify-content-center my-5">
+               <div className="col-11 col-md-8 border shadow p-3">
+                    <div className="text-center border-bottom font-dark m-4">
+                        <h3>Company SignUp</h3>
+                    </div>
                    <Form model="ApplyInfo" 
                         onSubmit={(values) => handleApply(values)}
                         validators={{
@@ -200,12 +199,12 @@ function SignUpCompany(){
                                     <div className="d-flex">
                                         <Control.text model=".password" type={showPass} id="password" name="password"
                                             placeholder="Password"
-                                            className="form-control col-10 col-lg-11"
+                                            className="form-control col-10 "
                                             validators={{
                                                 required, minLength: minLength(8)
                                             }}
                                         />                                            
-                                        <ClickNHold className="btn btn-light border col-2 col-lg-1" onStart={()=>setPass("text")} onEnd={()=>setPass("password")}>
+                                        <ClickNHold className="btn btn-light border col-2 " onStart={()=>setPass("text")} onEnd={()=>setPass("password")}>
                                             <i className="fa fa-eye "></i>
                                         </ClickNHold>
                                     </div>
@@ -251,7 +250,7 @@ function SignUpCompany(){
                             </Row>             
                             <Row className="form-group text-center">
                                 <Col>
-                                    <Button type="submit" className="col-6">
+                                    <Button type="submit" className="col-6 btn-primary">
                                          Apply
                                     </Button>
                                 </Col>
@@ -259,7 +258,6 @@ function SignUpCompany(){
                    </Form> 
                </div>
            </div>
-           <CopyRightFooter/>
        </div>
     )        
 }

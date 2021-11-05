@@ -28,11 +28,12 @@ function SignUpCandidate(){
     return(
         
        <div className="container">
-           <div className="row justify-content-center ">
-               <div className="col-12 text-center m-4">
-                   <h3>Candidate SignUp</h3>
-               </div>
-               <div className="col-12 col-md-8 border">
+           <div className="row justify-content-center mt-5">
+               
+               <div className="col-11 col-md-8 shadow border p-5">
+                    <div className="text-center font-dark border-bottom mb-5">
+                        <h3>Candidate SignUp</h3>
+                    </div>
                    <Form model="SignUpInfo" 
                         onSubmit={(values) => handleSignUp(values)}
                         validators={{
@@ -154,12 +155,12 @@ function SignUpCandidate(){
                                     <div className="d-flex">
                                         <Control.text model=".password" type={showPass} id="password" name="password"
                                             placeholder="Password"
-                                            className="form-control col-10 col-lg-11"
+                                            className="form-control col-10 "
                                             validators={{
                                                 required, minLength: minLength(8)
                                             }}
                                         />                                            
-                                        <ClickNHold className="btn btn-light border col-2 col-lg-1" onStart={()=>setPass("text")} onEnd={()=>setPass("password")}>
+                                        <ClickNHold className="btn btn-light border col-2 " onStart={()=>setPass("text")} onEnd={()=>setPass("password")}>
                                             <i className="fa fa-eye "></i>
                                         </ClickNHold>
                                     </div>
@@ -206,7 +207,7 @@ function SignUpCandidate(){
                             </Row>             
                             <Row className="form-group text-center">
                                 <Col>
-                                    <Button type="submit" className="col-6">
+                                    <Button type="submit" className="col-6 btn-primary" disabled={false}>
                                          Sign In
                                     </Button>
                                 </Col>
@@ -215,7 +216,7 @@ function SignUpCandidate(){
                      
                </div>
            </div>
-       </div>
+       </div>           
     )        
 }
 

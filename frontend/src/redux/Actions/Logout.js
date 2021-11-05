@@ -21,6 +21,7 @@ export const logoutUser = () =>async (dispatch) => {
     localStorage.removeItem('token');
     localStorage.removeItem('creds');
     localStorage.removeItem('usertype');
+    localStorage.removeItem('profile');
     dispatch(receiveLogout());
     dispatch({type: ActionTypes.DESTROY_SESSION})
     dispatch(statusUpdate(false,true,'Logout Successfull!!'));

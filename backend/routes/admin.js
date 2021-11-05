@@ -9,10 +9,48 @@ router.use(express.json());
 
 var User = require('../models/user');
 var Application = require('../models/application');
-var Candidate = require('../models/candidate')
 var Company = require('../models/company')
 
 router.options('*',cors.corsWithOptions,(req,res)=>{res.sendStatus(200);})
+
+router.get('/user/list',cors.cors,authenticate.verifyUser,authenticate.verifyAdmin, async (req, res, next) => {
+  try{
+    const users = await User.find({},{ "salt":0 , "hash":0});
+    res.statusCode=200;
+    res.setHeader('Content-Type','application/json');
+    res.json({users:users});
+  } catch (err) {
+    next(err);
+  }  
+});
+
+router.get('/user/reports',cors.cors,authenticate.verifyUser,authenticate.verifyAdmin, async (req, res, next) => {
+  try{
+    
+    const agg = [
+      {
+        '$group': {
+          '_id': '$usertype', 
+          'count': {
+            '$sum': 1
+          }
+        }
+      }, {
+        '$sort': {
+          '_id': 1
+        }
+      }
+    ];
+    const usertype_list = await User.aggregate(agg);
+    var total = usertype_list[0].count+usertype_list[1].count+usertype_list[2].count;
+    res.statusCode=200;
+    res.setHeader('Content-Type','application/json');
+    res.json({usertype_list:usertype_list,total:total});
+  } catch (err) {
+    next(err);
+  }  
+});
+
 router.get('/application',cors.cors,authenticate.verifyUser,authenticate.verifyAdmin, async (req, res, next) => {
   try{
     const applications = await Application.find();

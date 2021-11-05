@@ -10,10 +10,22 @@ import { Card, CardText, CardTitle, CardSubtitle, CardImgOverlay, CardImg} from 
 function UserView(user){
     return(
             <React.Fragment>     
-                <CardImgOverlay className="col-8">
-                        <CardTitle className="h5">{user.username}</CardTitle>
-                        <CardSubtitle>{user.usertype}</CardSubtitle>
-                        <CardText>Other Details</CardText>
+                <CardImgOverlay className="col-9">
+                        {(user.usertype!=="admin")?
+                        <CardTitle className="h5">{user.firstname}&nbsp;{user.lastname}</CardTitle>
+                        :
+                        <CardTitle className="h5">Admin&nbsp;Account</CardTitle>
+                        }
+                        <CardSubtitle className="font-dark">{user.usertype}</CardSubtitle>
+                        <CardText className="row mt-2 mt-md-4 font-short">
+                            <div className="col-3 font-weight-bold">
+                                Email<br/>Joined<br/>{(user.active)?<span className="font-dark">Active</span>:<span className="text-secondary">Inactive</span> }
+                            </div>
+                            <div className="col-9 font-italic">
+                            {user.username}<br/>
+                            {new Intl.DateTimeFormat('en-US', {timeStyle:"medium",dateStyle:"medium"}).format(new Date(Date.parse(user.createdAt)))}
+                            </div>                                                      
+                        </CardText>
                 </CardImgOverlay>
                 <CardImg className="rounded-circle offset-8 col-4 " src={dp}/>
             </React.Fragment>  
@@ -39,10 +51,8 @@ function Users(){
 
         return(
             <div className="container-fluid">
-                <h3 className="my-5 border-bottom">
-                  ALL USERS
-                </h3>
-                <div className="row justify-content-around">
+                <div className="row frh"></div>
+                <div className="row justify-content-around mt-5">
                   {listview}
                 </div>    
             </div>      

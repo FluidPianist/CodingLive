@@ -8,7 +8,7 @@ import ClickNHold from 'react-click-n-hold';
 
 
 function ResetPassword(){
-    const {register,formState: { errors},watch,handleSubmit} = useForm();
+    const {register,formState: { errors},watch,handleSubmit,reset} = useForm();
     const watchPassword = watch("password", "");
     
     const[showPass,setPass] = useState("password");
@@ -17,9 +17,8 @@ function ResetPassword(){
     const dispatch= useDispatch();
       
     const handledata = (data)=>{
-        console.log(data);       
-        var response=dispatch(resetPassword(token,userId,data.password));
-        console.log(response);
+        dispatch(resetPassword(token,userId,data.password));
+        reset();
     }
     
     return(
@@ -27,7 +26,7 @@ function ResetPassword(){
             <div className="container ">
                 <div className="row justify-content-center">
                     <Form className="col-11 col-md-7 border m-4 p-5" onSubmit={handleSubmit(handledata)}>
-                        <div className="row mb-4">
+                        <div className="row mb-4 font-dark border-bottom">
                             <h3>Reset Password</h3>
                         </div>
 
@@ -58,8 +57,8 @@ function ResetPassword(){
                            {errors.c_password && <li className="text-danger small">{errors.c_password.message}</li>}
                         </FormGroup>
 
-                        <FormGroup className=" row mb-4">
-                            <Button type="submit" className="col-4">Confirm</Button> 
+                        <FormGroup className=" row mb-4 ">
+                            <Button type="submit" className="col-4 btn-primary">Confirm</Button> 
                         </FormGroup>                            
                     </Form>
                 </div>

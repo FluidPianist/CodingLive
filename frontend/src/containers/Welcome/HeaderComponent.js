@@ -2,7 +2,7 @@ import React,{useState} from 'react';
 import {Navbar, NavbarBrand, Nav, NavbarToggler, Collapse,NavItem, 
         } from 'reactstrap';
 import {NavLink} from 'react-router-dom';
-import logo from '../../shared/logo.PNG';
+import logo from '../../shared/logo.png';
 
 
 const Header = () => {
@@ -16,13 +16,13 @@ const Header = () => {
     
     return(
         <React.Fragment >
-            <Navbar expand="md" className="navbar-light">
+            <Navbar expand="md" className="navbar-light bgc-alt sticky-top">
                 <div className="container-fluid">
                     <NavbarToggler color="primary" onClick={setToggleNav} />
                     <NavbarBrand className="mr-5" href="/">
                     &nbsp;<img src={logo}  width="200" alt ="CodingLive"/>
                     </NavbarBrand>
-                    <Collapse isOpen={isNavOpen} navbar>
+                    <Collapse isOpen={isNavOpen} onClick={setToggleNav} navbar>
                         <Nav navbar className="ml-auto">
                             <NavItem>
                                 <NavLink className="nav-link" to='/home'>

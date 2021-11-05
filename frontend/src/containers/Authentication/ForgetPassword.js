@@ -12,10 +12,10 @@ function ForgetPassword(){
         event.preventDefault();     
     }
     return(
-        <div className="container ">
+        <div className="container vh-height">
                 <div className="row justify-content-center">
-                    <Form className="col-11 col-md-7 border m-4 p-5" onSubmit={handleClick}>
-                    <div className="row mb-4">
+                    <Form className="col-11 col-md-7 border m-4 p-5 " onSubmit={handleClick}>
+                    <div className="row mb-5 font-dark border-bottom">
                         <h3>Forget Password</h3>
                     </div>
                         <FormGroup className="row mb-4" >
@@ -23,7 +23,7 @@ function ForgetPassword(){
                             <Input type="text" id="email" name="email"/>
                         </FormGroup>
                         <FormGroup className="row mb-4">
-                            <Button className="col-4" >Confirm</Button>  
+                            <Button className="col-4 btn-primary" >Confirm</Button>  
                         </FormGroup>    
                     </Form>
                 </div>

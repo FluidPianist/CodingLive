@@ -12,7 +12,7 @@ export const statusupdate = (isLoading,success,msg) => {
 
 export const statusUpdate=(isLoading,success,msg)=>(dispatch)=>{
     if(msg==="Error 401 : Unauthorized"){
-        msg="You have been logged out!! Please Login Again"
+        msg="Session Expired!! Please Login Again"
         dispatch(logoutUser());
         dispatch(statusupdate(isLoading,success,msg));
     }

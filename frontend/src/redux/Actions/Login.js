@@ -26,28 +26,28 @@ export const loginError = () => {
     }
 }
 
-
-export const loginUser = (creds) => (dispatch) => {
-    // We dispatch requestLogin to kickoff the call to the API;
-    dispatch(requestLogin());
-    dispatch(statusUpdate(true,null,''));
-    axios.post(baseUrl+"user/login", {
-        username:creds.username,
-        password:creds.password
-    })
-    .then(response => {
-            console.log(response);
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('creds', JSON.stringify(creds.username));
-            localStorage.setItem('usertype',response.data.usertype);
-            // Dispatch the success action
-            dispatch(receiveLogin(response.data,creds.username));
-            dispatch(statusUpdate(false,true,response.data.msg));    
-    })
-    .catch(error => {
+export const loginUser = (creds) => async (dispatch) => {
+    try{
+         dispatch(requestLogin());
+         dispatch(statusUpdate(true,null,''));
+        const response = await axios.post(baseUrl+"user/login", {
+            username:creds.username,
+            password:creds.password
+        })
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('creds', (creds.username));
+        localStorage.setItem('usertype',response.data.usertype);
+         dispatch(receiveLogin(response.data,creds.username));
+         dispatch(statusUpdate(false,true,response.data.msg));
+         
+    }  
+    catch(error){
         dispatch(loginError());
-        dispatch(statusUpdate(false,false,"Error "+error.response.status+" : "+error.response.statusText))
-    });
+        if(error.response) 
+         dispatch(statusUpdate(false,false,"Error "+error.response.status+" : "+error.response.statusText));
+        else
+         dispatch(statusUpdate(false,false,error.message));
+    }
 };
 
 
@@ -61,7 +61,7 @@ export const OAuthConnect = (url) => (dispatch) => {
                 var creds=url.searchParams.get("username");
                 var usertype=url.searchParams.get("usertype");
                 localStorage.setItem('token', token);
-                localStorage.setItem('creds', JSON.stringify(creds));
+                localStorage.setItem('creds', creds);
                 localStorage.setItem('usertype',usertype);
                 var response={
                     token: token,
@@ -73,7 +73,7 @@ export const OAuthConnect = (url) => (dispatch) => {
             else{
                 var errmsg=url.searchParams.get("errmsg");
                 dispatch(loginError());
-                dispatch(statusUpdate(false,false,"Error "+errmsg))
+                dispatch(statusUpdate(false,false,"Error "+errmsg))   
             }
             // We dispatch requestLogin to kickoff the call to the API;   
 }

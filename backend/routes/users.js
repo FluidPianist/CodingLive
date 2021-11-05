@@ -10,6 +10,7 @@ var User = require('../models/user');
 var Token = require('../models/token')
 var Application = require('../models/application');
 var Candidate = require('../models/candidate');
+var Company = require('../models/company');
 
 const crypto=require("crypto");
 const bcrypt=require("bcrypt");
@@ -19,16 +20,26 @@ const bcryptSalt=process.env.BCRYPT_SALT;
 
 /********************** Exclusive For Admin *************************/
 router.options('*',cors.corsWithOptions,(req,res)=>{res.sendStatus(200);})
-router.get('/list',cors.cors,authenticate.verifyUser,authenticate.verifyAdmin, async (req, res, next) => {
-  try{
-    const users = await User.find({},{ "username":1 , "usertype":1});
-    res.statusCode=200;
+
+router.post('/create/admin',cors.cors,authenticate.verifyUser,authenticate.verifyAdmin,async (req,res,next)=>{
+  try{  
+    const info=req.body.CreateInfo;
+    var ch= await User.findOne({username:info.username});
+    if(ch!==null){
+      var msg ="Email already exists";
+      res.statusMessage = msg;
+      return res.status(409).end(); 
+    }
+    await User.register(new User({username:info.username,usertype:"admin",active:true}),info.password);
+    res.statusCode= 200;
     res.setHeader('Content-Type','application/json');
-    res.json({users: users});
-  } catch (err) {
+    res.json({msg:"New Admin Account Created !!"});     
+  }
+  catch(err){
     next(err);
-  }  
-});
+  }     
+})
+
 
 /**************************Exclusive For Company********************/
 
@@ -42,7 +53,7 @@ router.post('/apply/company',cors.cors,async (req,res,next)=>{
       return res.status(409).end(); 
     }
     await new Application(info).save();
-    await User.register(new User({username:info.username,usertype:"company",active:false}),info.password);
+    await User.register(new User({username:info.username,usertype:"company",active:false,firstname:info.firstname,lastname:info.lastname}),info.password);
     await sendEmail(info.username,"Application Acknowledgement","Your Application for Account Creation was succesfully submitted. We will contact you through email after we have verified your details.\n\nThank You,\nTeam Coding Live");
     res.statusCode= 200;
     res.setHeader('Content-Type','application/json');
@@ -66,7 +77,7 @@ router.post('/signup/candidate',cors.cors,async (req,res,next)=>{
       return res.status(409).end(); 
     }
     else{
-      var user= new User({username:info.username,usertype:"candidate"});
+      var user= new User({username:info.username,usertype:"candidate",firstname:info.firstname,lastname:info.lastname});
       await User.register(user,info.password);
       var cand = new Candidate(info);
       cand._id= user._id;
@@ -122,6 +133,22 @@ router.get('/google/token', cors.cors, (req, res, next) => {
 });
 
 /************  For All Users ****************/
+
+router.get('/profile',cors.cors,authenticate.verifyUser,async (req,res,next)=>{
+  try{
+    if(req.user.usertype==="candidate"){
+     var profile = await Candidate.findById(req.user._id);
+    }
+    else if(req.user.usertype==="company"){
+      var profile = await Company.findById(req.user._id);
+    } 
+    res.statusCode= 200;
+    res.setHeader('Content-Type','application/json');
+    res.json(profile);
+  }catch(err){
+    next(err);
+  }
+})
 
 router.post('/login',cors.cors,async (req,res,next)=>{ 
   try{

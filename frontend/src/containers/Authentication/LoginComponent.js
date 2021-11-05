@@ -21,10 +21,10 @@ function Login(){
         
         <React.Fragment>
             {!auth.isAuthenticated?
-                <div className="container mt-4 ">
-                <div className="row justify-content-center">
-                    <Form className="col-11 col-md-7 border m-4 p-5" onSubmit={handleLogin}>
-                    <div className="row mb-4">
+                <div className="container mt-5">
+                <div className="row justify-content-center ">
+                    <Form className="col-11 col-md-7 border shadow m-4 p-5 " onSubmit={handleLogin}>
+                    <div className="row mb-4 font-dark border-bottom">
                         <h3>Login</h3>
                     </div>
                         <FormGroup className="row mb-4" >
@@ -39,10 +39,12 @@ function Login(){
                             </ClickNHold>
                         </FormGroup>
                         <FormGroup className="row mb-4">
-                            <Button className="col-4" type ="submit" value="submit">Login</Button>  
-                            <Link className="col-8 text-right text-decoration-none" to={`/forgetpassword`}>
-                                Forget Password
-                            </Link>
+                            <Button className="col-4 btn-primary" type ="submit" value="submit">Login</Button>
+                            <div className="col-8  text-right p-0">  
+                                <Link className=" font-dark text-decoration-none" to={`/forgetpassword`}>
+                                    Forget Password
+                                </Link>
+                            </div>
                         </FormGroup>    
                     </Form>
                 </div>

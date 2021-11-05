@@ -10,9 +10,12 @@ export const forgetPassword =(username)=>(dispatch)=>{
  .then(response=>{
      dispatch(statusUpdate(false,true,response.data.msg))
     })
- .catch(error => {
-    dispatch(statusUpdate(false,false,"Error "+error.response.status+" : "+error.response.statusText))
-});
+    .catch((error) =>{
+      if(error.response) 
+       dispatch(statusUpdate(false,false,"Error "+error.response.status+" : "+error.response.statusText));
+       else
+      dispatch(statusUpdate(false,false,error.message));
+    });
 };
 
 export const resetPassword =(token,userId,password)=>async (dispatch)=>{
@@ -25,7 +28,10 @@ export const resetPassword =(token,userId,password)=>async (dispatch)=>{
   .then(response=>{
       dispatch(statusUpdate(false,true,response.data.msg))     
      })
-  .catch(error => {
-     dispatch(statusUpdate(false,false,"Error "+error.response.status+" : "+error.response.statusText))
- });
+     .catch((error) =>{
+      if(error.response) 
+       dispatch(statusUpdate(false,false,"Error "+error.response.status+" : "+error.response.statusText));
+       else
+      dispatch(statusUpdate(false,false,error.message));
+    });
  };

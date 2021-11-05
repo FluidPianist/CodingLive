@@ -4,7 +4,7 @@ export const Auth = (state = {
     //default parameters are set as such when Auth reducer is used for the first time
     isAuthenticated: localStorage.getItem('token') ? true : false,
     token: localStorage.getItem('token'),
-    user: localStorage.getItem('creds') ? JSON.parse(localStorage.getItem('creds')) : null,
+    user: localStorage.getItem('creds') ? localStorage.getItem('creds') : null,
     usertype : localStorage.getItem('usertype') ?(localStorage.getItem('usertype')) : null,
 }, action) => {
     switch (action.type) {

@@ -12,7 +12,7 @@ function Home(){
                             <div className="col-12 col-sm-6 text-center">
                                 <span className="h2">Lets Code And Get Hired</span><br/>
                                 <Link to ={`/signup`}>
-                                    <Button className="mt-3">Get Started</Button>
+                                    <Button className="mt-3 btn-primary font-weight-bold">Get Started</Button>
                                 </Link>
                             </div>
                             <div className="col-12 col-sm-6 text-center">

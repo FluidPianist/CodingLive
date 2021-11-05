@@ -11,6 +11,7 @@ export const CheckAvailability = (username) => (dispatch) => {
 };
 
 
+
 export const Signup = (SignUpInfo) => (dispatch) => { 
     dispatch(statusUpdate(true,null,''));
     axios.post(baseUrl + 'user/signup/candidate', {
@@ -22,8 +23,15 @@ export const Signup = (SignUpInfo) => (dispatch) => {
         setTimeout(()=>{dispatch(loginUser( {username: SignUpInfo.username,password: SignUpInfo.password}))},2000); 
       } 
     )
-    .catch(error => dispatch(statusUpdate(false,false,"Error "+error.response.status+" : "+error.response.statusText)));
+    .catch((error) =>{
+      if(error.response) 
+       dispatch(statusUpdate(false,false,"Error "+error.response.status+" : "+error.response.statusText));
+      else
+        dispatch(statusUpdate(false,false,error.message));
+    });
 };
+
+
 
 export const Apply = (ApplyInfo) => (dispatch) => { 
   dispatch(statusUpdate(true,null,''));
@@ -35,5 +43,10 @@ export const Apply = (ApplyInfo) => (dispatch) => {
       dispatch(statusUpdate(false,true,response.data.msg))
     } 
   )
-  .catch(error => dispatch(statusUpdate(false,false,"Error "+error.response.status+" : "+error.response.statusText)));
-};
+  .catch((error) =>{
+    if(error.response) 
+     dispatch(statusUpdate(false,false,"Error "+error.response.status+" : "+error.response.statusText));
+     else
+    dispatch(statusUpdate(false,false,error.message));
+  });
+}
