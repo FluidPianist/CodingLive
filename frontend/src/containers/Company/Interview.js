@@ -1,10 +1,18 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {Button} from 'reactstrap';
 import { getinterviewlist } from '../../redux/Actions/User';
+import {
+    Button
+} from "reactstrap"
+
+import {assess} from '../../redux/Actions/Company';
+
 
 function InterviewView(intrv){
-  return(
+    
+    const dispatch = useDispatch();
+    
+    return(
           <React.Fragment>     
               <div className="col-12 row m-0 p-3 col-md-10">
                     <h2 className="col-12 m-0 "> INTERVIEW</h2>
@@ -21,19 +29,23 @@ function InterviewView(intrv){
                         {intrv.vacancy.duration} minutes
                     </div>
               </div>
-              <div className="col-12 m-0 p-3 bg-white col-md-2 align-self-center">
-                  <Button className="btn-primary " onClick={()=>{window.location=intrv.meetinglink}}>Join on {new Intl.DateTimeFormat('en-US', {dateStyle:"medium"}).format(new Date(Date.parse(intrv.vacancy.commencement)))}</Button>
-              </div>
+              <div className="col-12 m-0 p-3 bg-white col-md-2 align-self-center text-center">
+                  <Button className="btn-primary mx-2 mx-md-0 my-md-1" onClick={()=>console.log(intrv.problem,intrv.code)}>Scheduled on {new Intl.DateTimeFormat('en-US', {dateStyle:"medium"}).format(new Date(Date.parse(intrv.vacancy.commencement)))}</Button>                   
+                  <Button className="btn-primary mx-2 mx-md-0 my-md-1" onClick={()=>dispatch(assess(intrv._id,"Selected"))}>Accept</Button>  
+                  <Button className="btn-primary mx-2 mx-md-0 my-md-1" onClick={()=>dispatch(assess(intrv._id,"Not Selected"))}>Reject</Button> 
+              </div> 
+              
           </React.Fragment>  
   );
 }
+
 
 
 function Interview(){
    
    const interview_list= useSelector(state=>state.interview_list);
    const dispatch = useDispatch();
-
+   
 
    useEffect(()=>{
      dispatch(getinterviewlist());

@@ -74,3 +74,21 @@ export const send_appl_status=(vacancyId,applicantId,approve)=>(dispatch)=>{
         dispatch(statusUpdate(false,false,error.message));
     });
 }
+
+export const assess=(appointmentId,status)=>(dispatch)=>{
+    dispatch(statusUpdate(true,null,''));
+    const token = localStorage.getItem('token');
+    const config = {
+        headers: { Authorization: `Bearer ${token}` }
+    }
+    axios.post(baseUrl+"company/selection",{id:appointmentId,status},config )
+    .then(async (response) => {
+            dispatch(statusUpdate(false,true,response.data.msg));                             
+    })
+    .catch((error) =>{
+        if(error.response) 
+         dispatch(statusUpdate(false,false,"Error "+error.response.status+" : "+error.response.statusText));
+         else
+        dispatch(statusUpdate(false,false,error.message));
+    });
+}

@@ -114,4 +114,33 @@ router.get('/interview/list',cors.cors,authenticate.verifyUser,async (req,res,ne
     }     
   })
 
+  router.post('/interview/problem/view',cors.cors,authenticate.verifyUser,async (req,res,next)=>{
+    try{ 
+      var appointment = await Appointment.findOne({ candidate:req.user._id,_id:req.body.id});
+      var problem = await Problem.findOne({_id:appointment.problem});
+        res.statusCode= 200;
+        res.setHeader('Content-Type','application/json');
+        res.json(problem);      
+    }
+    catch(err){
+      console.log(err);
+      next(err);
+    }     
+  }) 
+
+  router.post('/interview/problem/submit',cors.cors,authenticate.verifyUser,async (req,res,next)=>{
+    try{ 
+      var appointment = await Appointment.findOne({ candidate:req.user._id,_id:req.body.id});
+      appointment.code= req.body.code;
+      await appointment.save(); 
+      res.statusCode= 200;
+        res.setHeader('Content-Type','application/json');
+        res.json({msg:"Code has been Submitted"});    
+    }
+    catch(err){
+      console.log(err);
+      next(err);
+    }     
+  }) 
+
 module.exports = router;

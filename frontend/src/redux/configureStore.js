@@ -14,6 +14,7 @@ import { InitialVacancy } from './Forms/InitialVacancy';
 import { InitialProblem } from './Forms/InitialProblem';
 import { Vacancy_list } from './Reducers/vacancy_list';
 import { Interview_list } from './Reducers/interview_list';
+import {Problem} from './Reducers/problem';
 
 const appReducer = combineReducers({
     auth: Auth,
@@ -31,6 +32,7 @@ const appReducer = combineReducers({
     vacancy_list: Vacancy_list,
     user_report: User_Report,
     profile: Profile,
+    problem: Problem,
 });
 
 const rootReducer = (state, action) => {

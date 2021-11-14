@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Button} from 'reactstrap';
-import { getinterviewlist } from '../../redux/Actions/User';
+import {getinterviewlist} from '../../redux/Actions/User';
+import {submitproblem, viewproblem} from '../../redux/Actions/Candidate'
 
 function InterviewView(intrv){
-  return(
+    const dispatch = useDispatch();
+    return(
           <React.Fragment>     
               <div className="col-12 row m-0 p-3 col-md-10">
                     <h2 className="col-12 m-0 "> INTERVIEW</h2>
@@ -22,7 +24,8 @@ function InterviewView(intrv){
                     </div>
               </div>
               <div className="col-12 m-0 p-3 bg-white col-md-2 align-self-center">
-                  <Button className="btn-primary " onClick={()=>{window.location=intrv.meetinglink}}>Join on {new Intl.DateTimeFormat('en-US', {dateStyle:"medium"}).format(new Date(Date.parse(intrv.vacancy.commencement)))}</Button>
+                  <Button className="btn-primary " onClick={()=>dispatch(viewproblem(intrv._id))}>View on {new Intl.DateTimeFormat('en-US', {dateStyle:"medium"}).format(new Date(Date.parse(intrv.vacancy.commencement)))}</Button>
+                  <Button className="btn-primary mx-2 mx-md-0 my-md-1" onClick={()=>dispatch(submitproblem("This is the code",intrv._id))}>Submit Code</Button>
               </div>
           </React.Fragment>  
   );

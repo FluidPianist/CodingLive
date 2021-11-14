@@ -20,6 +20,13 @@ var Appointment = new Schema({
     },
     meetinglink:{
         type: String
+    },
+    code:{
+        type: String
+    },
+    status:{
+        type: String,
+        default: "pending"
     }
 },{
     timestamps:true

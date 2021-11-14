@@ -20,7 +20,7 @@ router.post('/vacancy/create',cors.cors,authenticate.verifyUser,async (req,res,n
     const vacancy= new Vacancy(req.body.VacancyInfo);
     const problem= new Problem(req.body.ProblemInfo);
     await problem.save();
-    vacancy.Problem = problem._id;
+    vacancy.problem = problem._id;
     await vacancy.save();
     
     var company = await Company.findById(req.user._id);
@@ -118,7 +118,7 @@ router.post('/application/approval',cors.cors,authenticate.verifyUser,async (req
           }).save();
           await Candidate.updateOne(
             {_id:req.body.applicantId,'applied.vacancy':req.body.vacancyId},
-            { $set : {  "applied.$.status":"You have been Shortlisted"}}
+            { $set : {  "applied.$.status":"You have been Shortlisted for Interview"}}
            );
           res.json({msg:"The Candidate has been ShortListed"}); 
         }
@@ -126,7 +126,7 @@ router.post('/application/approval',cors.cors,authenticate.verifyUser,async (req
         else{
           await Candidate.updateOne(
             {_id:req.body.applicantId,'applied.vacancy':req.body.vacancyId},
-            { $set : {  "applied.$.status":"You have NOT been Shortlisted"}}
+            { $set : {  "applied.$.status":"You have NOT been Shortlisted for Interview"}}
            );
           res.json({msg:"The Candidate has NOT been ShortListed"});
         }
@@ -166,7 +166,7 @@ router.get('/interview/list',cors.cors,authenticate.verifyUser,async (req,res,ne
                                             path : 'problem',
                                             model: 'Problem',
                                           }
-                                        )
+                                        )  
       res.statusCode= 200;
       res.setHeader('Content-Type','application/json');
       res.json(appointments); 
@@ -177,6 +177,31 @@ router.get('/interview/list',cors.cors,authenticate.verifyUser,async (req,res,ne
     next(err);
   }     
 })
+
+
+router.post('/selection',cors.cors,authenticate.verifyUser,async (req,res,next)=>{
+  try{ 
+    var appointment = await Appointment.findOne({ company:req.user._id,id:req.body.id})      
+    appointment.status = req.body.status;
+    await appointment.save();
+    var candidate = await Candidate.findOne({candidate: appointment.candidate});
+    await Candidate.updateOne(
+      {_id:appointment.candidate,'applied.vacancy':appointment.vacancy},
+      { $set : {  "applied.$.status":"You are "+req.body.status+" for next round"}}
+     );
+
+    res.statusCode= 200;
+      res.setHeader('Content-Type','application/json');
+      res.json({msg: "Candidate is "+req.body.status}); 
+    
+      //Send Notification to candidate abou result here.
+  }
+  catch(err){
+    console.log(err);
+    next(err);
+  }     
+})
+
 
 
 module.exports = router;
