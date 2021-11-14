@@ -5,6 +5,7 @@ import axios from "axios";
 const baseUrl =process.env.REACT_APP_BASE_URL;
 
 export const CheckAvailability = (username) => (dispatch) => { 
+  console.log(baseUrl);
   return axios.post(baseUrl + 'user/signup/searchemail', {
       username:username
   })
